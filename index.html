@@ -65,32 +65,6 @@
             background-color: var(--accent-blue);
         }
         
-        .theme-toggle {
-            color: var(--text-primary);
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            z-index: 50;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-secondary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        @media (min-width: 768px) {
-            .theme-toggle {
-                position: static;
-                width: auto;
-                height: auto;
-                border-radius: 9999px;
-                background-color: transparent;
-                box-shadow: none;
-            }
-        }
         
         /* Animation for success message */
         @keyframes fadeIn {
@@ -110,10 +84,6 @@
             <h1 class="text-xl font-bold">The Haitian Hub Studio</h1>
         </div>
         <div class="flex items-center space-x-2 ml-4">
-            <button id="themeToggle" class="theme-toggle p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:inline"></i>
-            </button>
             <button id="loginBtn" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
                 <i class="fas fa-sign-in-alt mr-2"></i>Login
             </button>
@@ -196,8 +166,16 @@
         </div>
     </main>
 
+    <div class="fixed bottom-6 right-6 z-50">
+        <button id="themeToggle" class="p-3 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition shadow-lg">
+            <i class="fas fa-moon dark:hidden text-lg"></i>
+            <i class="fas fa-sun hidden dark:inline text-lg"></i>
+        </button>
+    </div>
+
     <footer class="py-6 px-4 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
-        <p>© 2023 The Haitian Hub Studio. All rights reserved.</p>
+        <p>© 2025 The Haitian Hub Studio. All rights reserved.</p>
+        <p class="mt-1">Website by Solvexa Labs</p>
     </footer>
 
     <!-- Login Modal -->
