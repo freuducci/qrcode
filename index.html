@@ -67,6 +67,29 @@
         
         .theme-toggle {
             color: var(--text-primary);
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 50;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (min-width: 768px) {
+            .theme-toggle {
+                position: static;
+                width: auto;
+                height: auto;
+                border-radius: 9999px;
+                background-color: transparent;
+                box-shadow: none;
+            }
         }
         
         /* Animation for success message */
@@ -81,12 +104,12 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center space-x-2">
+    <header class="py-4 px-6 flex items-center border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-2 mr-auto">
             <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">HH</div>
             <h1 class="text-xl font-bold">The Haitian Hub Studio</h1>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 ml-4">
             <button id="themeToggle" class="theme-toggle p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                 <i class="fas fa-moon dark:hidden"></i>
                 <i class="fas fa-sun hidden dark:inline"></i>
