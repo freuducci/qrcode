@@ -4,33 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Haitian Hub Studio - Visitor Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bauhaus+93&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-blue: #2563eb;
+            --primary-red: #BF2026;
+            --primary-orange: #F07522;
             --primary-white: #ffffff;
             --primary-gray: #1f2937;
-            --accent-blue: #3b82f6;
         }
         
         .dark {
-            --bg-primary: #1f2937;
-            --bg-secondary: #111827;
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
             --text-primary: #f9fafb;
             --text-secondary: #e5e7eb;
-            --input-bg: #374151;
-            --input-border: #4b5563;
+            --input-bg: #333333;
+            --input-border: #444444;
         }
         
         .light {
             --bg-primary: #ffffff;
-            --bg-secondary: #f3f4f6;
-            --text-primary: #1f2937;
-            --text-secondary: #4b5563;
+            --bg-secondary: #f8f8f8;
+            --text-primary: #333333;
+            --text-secondary: #666666;
             --input-bg: #ffffff;
-            --input-border: #d1d5db;
+            --input-border: #dddddd;
         }
         
         body {
@@ -52,17 +55,26 @@
         
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(191, 32, 38, 0.3);
         }
         
         .btn-primary {
-            background-color: var(--primary-blue);
+            background-color: var(--primary-red);
             color: white;
         }
         
         .btn-primary:hover {
-            background-color: var(--accent-blue);
+            background-color: var(--primary-orange);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-red);
         }
         
         
@@ -80,14 +92,14 @@
 <body class="min-h-screen flex flex-col">
     <header class="py-4 px-6 flex items-center border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center space-x-2 mr-auto">
-            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">HH</div>
-            <h1 class="text-xl font-bold">The Haitian Hub Studio</h1>
+            <div class="w-10 h-10 bg-[#BF2026] rounded-full flex items-center justify-center text-white font-bold text-xl">HH</div>
+            <h1 class="text-xl font-bold font-[Bauhaus+93]">The Haitian Hub Studio</h1>
         </div>
         <div class="flex items-center space-x-2 ml-4">
-            <button id="loginBtn" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+            <button id="loginBtn" class="px-4 py-2 rounded-md btn-primary transition">
                 <i class="fas fa-sign-in-alt mr-2"></i>Login
             </button>
-            <button id="logoutBtn" class="hidden px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700 transition">
+            <button id="logoutBtn" class="hidden px-4 py-2 rounded-md btn-primary transition">
                 <i class="fas fa-sign-out-alt mr-2"></i>Logout
             </button>
         </div>
@@ -96,17 +108,17 @@
     <main class="flex-grow container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-8">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2">Visitor Registration</h2>
-                <p class="text-gray-600 dark:text-gray-400">Welcome to The Haitian Hub Studio! Please check in below.</p>
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-[Bauhaus+93]">Visitor Registration</h2>
+                <p class="text-gray-600 dark:text-gray-400 font-[Poppins]">Welcome to The Haitian Hub Studio! Please check in below.</p>
             </div>
             
             <div id="registrationForm" class="form-container rounded-lg shadow-md p-6 md:p-8">
                 <form id="visitorForm" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="fullName" class="block text-sm font-medium mb-1">Full Name *</label>
+                            <label for="fullName" class="block text-sm font-medium mb-1 font-[Poppins]">Full Name *</label>
                             <input type="text" id="fullName" name="fullName" required 
-                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition font-[Poppins]">
                         </div>
                         
                         <div>
@@ -148,18 +160,18 @@
                     </div>
                     
                     <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <button type="submit" class="btn-primary px-6 py-3 rounded-md font-medium hover:shadow-lg transition">
+                        <button type="submit" class="btn-primary px-6 py-3 rounded-md font-medium hover:shadow-lg transition transform hover:scale-105">
                             <i class="fas fa-check-circle mr-2"></i> Submit Registration
                         </button>
                     </div>
                 </form>
             </div>
             
-            <div id="successMessage" class="hidden success-message text-center mt-8 p-6 rounded-lg bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                <i class="fas fa-check-circle text-4xl mb-4 text-green-600 dark:text-green-300"></i>
-                <h3 class="text-2xl font-bold mb-2">Thanks for checking in!</h3>
-                <p class="mb-4">Your registration has been successfully submitted.</p>
-                <button onclick="resetForm()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+            <div id="successMessage" class="hidden success-message text-center mt-8 p-6 rounded-lg" style="background-color: rgba(240, 117, 34, 0.1); color: var(--primary-orange);">
+                <i class="fas fa-check-circle text-4xl mb-4 text-orange-600 dark:text-orange-300"></i>
+                <h3 class="text-2xl font-bold mb-2 font-[Bauhaus+93]">Thanks for checking in!</h3>
+                <p class="mb-4 font-[Poppins]">Your registration has been successfully submitted.</p>
+                <button onclick="resetForm()" class="px-4 py-2 btn-secondary rounded-md transition transform hover:scale-105">
                     Register Another Visitor
                 </button>
             </div>
@@ -173,7 +185,7 @@
         </button>
     </div>
 
-    <footer class="py-6 px-4 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+    <footer class="py-6 px-4 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 font-[Poppins]">
         <p>© 2025 The Haitian Hub Studio. All rights reserved.</p>
         <p class="mt-1">Website by Solvexa Labs</p>
     </footer>
@@ -182,7 +194,7 @@
     <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-[var(--bg-secondary)] rounded-lg p-6 max-w-md w-full mx-4">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-[var(--text-primary)]">Login</h3>
+                <h3 class="text-xl font-bold text-[var(--text-primary)] font-[Bauhaus+93]">Login</h3>
                 <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                     <i class="fas fa-times"></i>
                 </button>
@@ -191,9 +203,9 @@
             <div id="loginSuccess" class="hidden mb-4 p-3 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-sm"></div>
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label for="loginEmail" class="block text-sm font-medium mb-1">Email *</label>
+                    <label for="loginEmail" class="block text-sm font-medium mb-1 font-[Poppins]">Email *</label>
                     <input type="email" id="loginEmail" required 
-                           class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                           class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition font-[Poppins]">
                 </div>
                 <div>
                     <label for="loginDate" class="block text-sm font-medium mb-1">Today's Date *</label>
