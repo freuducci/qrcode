@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,255 +8,273 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        :root {
+            --primary-blue: #2563eb;
+            --primary-white: #ffffff;
+            --primary-gray: #1f2937;
+            --accent-blue: #3b82f6;
         }
-        .input-focus:focus {
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+        
+        .dark {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --input-bg: #374151;
+            --input-border: #4b5563;
         }
-        .qr-code-container {
-            transition: all 0.3s ease;
+        
+        .light {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --input-bg: #ffffff;
+            --input-border: #d1d5db;
         }
-        .qr-code-container:hover {
-            transform: scale(1.05);
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .form-container {
+            background-color: var(--bg-secondary);
+            border-color: var(--input-border);
+        }
+        
+        input, select, textarea {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-blue);
+        }
+        
+        .theme-toggle {
+            color: var(--text-primary);
+        }
+        
+        /* Animation for success message */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .success-message {
+            animation: fadeIn 0.5s ease-out forwards;
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="gradient-bg text-white py-6 shadow-lg">
-            <div class="container mx-auto px-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center space-x-3">
-                        <i class="fas fa-camera-retro text-3xl"></i>
-                        <h1 class="text-2xl font-bold">The Haitian Hub Studio</h1>
-                    </div>
-                    <div class="hidden md:block">
-                        <button id="qrToggle" class="bg-white text-blue-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
-                            <i class="fas fa-qrcode mr-2"></i>Get QR Code
-                        </button>
-                    </div>
-                </div>
+<body class="min-h-screen flex flex-col">
+    <header class="py-4 px-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-2">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">HH</div>
+            <h1 class="text-xl font-bold">The Haitian Hub Studio</h1>
+        </div>
+        <button id="themeToggle" class="theme-toggle p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:inline"></i>
+        </button>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2">Visitor Registration</h2>
+                <p class="text-gray-600 dark:text-gray-400">Welcome to The Haitian Hub Studio! Please check in below.</p>
             </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="flex-grow container mx-auto px-4 py-8">
-            <div class="max-w-3xl mx-auto">
-                <!-- QR Code Modal (Mobile) -->
-                <div class="md:hidden mb-6 text-center">
-                    <button id="mobileQrToggle" class="bg-blue-700 text-white px-4 py-3 rounded-lg font-medium w-full hover:bg-blue-800 transition">
-                        <i class="fas fa-qrcode mr-2"></i>Get Registration QR Code
-                    </button>
-                </div>
-
-                <!-- QR Code Modal -->
-                <div id="qrModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div class="bg-white rounded-xl p-6 max-w-sm w-full">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-bold text-gray-800">Scan to Register</h3>
-                            <button id="closeQrModal" class="text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-times text-2xl"></i>
-                            </button>
+            
+            <div id="registrationForm" class="form-container rounded-lg shadow-md p-6 md:p-8">
+                <form id="visitorForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="fullName" class="block text-sm font-medium mb-1">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required 
+                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
                         </div>
-                        <div class="qr-code-container bg-white p-4 rounded-lg border border-gray-200 mb-4 flex justify-center">
-                            <div id="qrCode" class="w-48 h-48"></div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium mb-1">Email Address *</label>
+                            <input type="email" id="email" name="email" required 
+                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
                         </div>
-                        <p class="text-gray-600 text-center">Scan this QR code with your phone to access the registration form</p>
-                    </div>
-                </div>
-
-                <!-- Registration Form -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="gradient-bg py-4 px-6">
-                        <h2 class="text-2xl font-bold text-white">Visitor Registration</h2>
-                        <p class="text-blue-100">Please fill out the form below to check in</p>
+                        
+                        <div>
+                            <label for="phone" class="block text-sm font-medium mb-1">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required 
+                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition"
+                                   placeholder="(123) 456-7890">
+                        </div>
+                        
+                        <div>
+                            <label for="serviceType" class="block text-sm font-medium mb-1">Type of Service *</label>
+                            <select id="serviceType" name="serviceType" required 
+                                    class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                                <option value="">Select a service</option>
+                                <option value="Photography">Photography</option>
+                                <option value="Videography">Videography</option>
+                                <option value="Podcast">Podcast</option>
+                                <option value="Studio Rental">Studio Rental</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="visitDate" class="block text-sm font-medium mb-1">Date of Visit *</label>
+                            <input type="date" id="visitDate" name="visitDate" required 
+                                   class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                        </div>
                     </div>
                     
-                    <form id="registrationForm" class="p-6">
-                        <div class="space-y-6">
-                            <!-- Full Name -->
-                            <div>
-                                <label for="fullName" class="block text-gray-700 font-medium mb-2">Full Name <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-user text-gray-400"></i>
-                                    </div>
-                                    <input type="text" id="fullName" name="fullName" required 
-                                        class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus transition"
-                                        placeholder="John Doe">
-                                </div>
-                            </div>
-                            
-                            <!-- Email -->
-                            <div>
-                                <label for="email" class="block text-gray-700 font-medium mb-2">Email Address <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-envelope text-gray-400"></i>
-                                    </div>
-                                    <input type="email" id="email" name="email" required 
-                                        class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus transition"
-                                        placeholder="john@example.com">
-                                </div>
-                            </div>
-                            
-                            <!-- Phone -->
-                            <div>
-                                <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-phone text-gray-400"></i>
-                                    </div>
-                                    <input type="tel" id="phone" name="phone" required 
-                                        class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus transition"
-                                        placeholder="(123) 456-7890">
-                                </div>
-                            </div>
-                            
-                            <!-- Service Type -->
-                            <div>
-                                <label for="serviceType" class="block text-gray-700 font-medium mb-2">Type of Service <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-camera text-gray-400"></i>
-                                    </div>
-                                    <select id="serviceType" name="serviceType" required 
-                                        class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus appearance-none bg-white">
-                                        <option value="" disabled selected>Select a service</option>
-                                        <option value="Photography">Photography</option>
-                                        <option value="Videography">Videography</option>
-                                        <option value="Podcast">Podcast</option>
-                                        <option value="Studio Rental">Studio Rental</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Visit Date -->
-                            <div>
-                                <label for="visitDate" class="block text-gray-700 font-medium mb-2">Visit Date <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-calendar-day text-gray-400"></i>
-                                    </div>
-                                    <input type="date" id="visitDate" name="visitDate" required 
-                                        class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus transition">
-                                </div>
-                            </div>
-                            
-                            <!-- Notes -->
-                            <div>
-                                <label for="notes" class="block text-gray-700 font-medium mb-2">Notes (Optional)</label>
-                                <textarea id="notes" name="notes" rows="3"
-                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none input-focus transition"
-                                    placeholder="Any special requests or additional information"></textarea>
-                            </div>
-                            
-                            <!-- Submit Button -->
-                            <div class="pt-2">
-                                <button type="submit" class="gradient-bg text-white w-full py-4 rounded-lg font-bold hover:opacity-90 transition flex items-center justify-center">
-                                    <i class="fas fa-check-circle mr-2"></i> Complete Registration
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                
-                <!-- Success Message (Hidden by default) -->
-                <div id="successMessage" class="hidden bg-green-50 border border-green-200 rounded-xl p-6 mt-6 text-center">
-                    <div class="flex justify-center mb-4">
-                        <div class="bg-green-100 p-3 rounded-full">
-                            <i class="fas fa-check-circle text-green-600 text-4xl"></i>
-                        </div>
+                    <div>
+                        <label for="notes" class="block text-sm font-medium mb-1">Notes (Optional)</label>
+                        <textarea id="notes" name="notes" rows="3" 
+                                  class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition"></textarea>
                     </div>
-                    <h3 class="text-2xl font-bold text-green-800 mb-2">Thank you for checking in!</h3>
-                    <p class="text-green-600">Your registration has been successfully submitted.</p>
-                    <button id="newRegistration" class="mt-4 bg-blue-700 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition">
-                        <i class="fas fa-plus mr-2"></i>New Registration
-                    </button>
-                </div>
+                    
+                    <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button type="submit" class="btn-primary px-6 py-3 rounded-md font-medium hover:shadow-lg transition">
+                            <i class="fas fa-check-circle mr-2"></i> Submit Registration
+                        </button>
+                    </div>
+                </form>
             </div>
-        </main>
+            
+            <div id="successMessage" class="hidden success-message text-center mt-8 p-6 rounded-lg bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                <i class="fas fa-check-circle text-4xl mb-4 text-green-600 dark:text-green-300"></i>
+                <h3 class="text-2xl font-bold mb-2">Thanks for checking in!</h3>
+                <p class="mb-4">Your registration has been successfully submitted.</p>
+                <button onclick="resetForm()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+                    Register Another Visitor
+                </button>
+            </div>
+        </div>
+    </main>
 
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-6">
-            <div class="container mx-auto px-4 text-center">
-                <p>&copy; 2025 The Haitian Hub Studio. All rights reserved.</p>
-                <div class="mt-2 flex justify-center space-x-4">
-                    <a href="#" class="hover:text-blue-300 transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-blue-400 transition"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </footer>
-    </div>
+    <footer class="py-6 px-4 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
+        <p>© 2023 The Haitian Hub Studio. All rights reserved.</p>
+    </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set today's date as default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('visitDate').value = today;
+        // Initialize theme from localStorage or prefer-color-scheme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 
+                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.classList.add(savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        // Toggle theme
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
             
-            // Generate QR Code
+            if (isDark) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.setItem('theme', 'light');
+                updateThemeIcon('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateThemeIcon('dark');
+            }
+        });
+        
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('#themeToggle i');
+            if (theme === 'dark') {
+                document.querySelector('#themeToggle .fa-moon').classList.add('hidden');
+                document.querySelector('#themeToggle .fa-sun').classList.remove('hidden');
+            } else {
+                document.querySelector('#themeToggle .fa-sun').classList.add('hidden');
+                document.querySelector('#themeToggle .fa-moon').classList.remove('hidden');
+            }
+        }
+        
+        // Set today's date as default
+        function setDefaultDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('visitDate').value = `${yyyy}-${mm}-${dd}`;
+        }
+        
+        // Generate QR code
+        function generateQRCode() {
             const currentUrl = window.location.href;
             QRCode.toCanvas(document.getElementById('qrCode'), currentUrl, {
-                width: 200,
-                margin: 2,
+                width: 150,
+                margin: 1,
                 color: {
-                    dark: '#1e3a8a',
+                    dark: '#000000',
                     light: '#ffffff'
                 }
+            }, function (error) {
+                if (error) console.error(error);
             });
+        }
+        
+        // Form submission
+        document.getElementById('visitorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // QR Code Modal Toggle
-            const qrModal = document.getElementById('qrModal');
-            const qrToggle = document.getElementById('qrToggle');
-            const mobileQrToggle = document.getElementById('mobileQrToggle');
-            const closeQrModal = document.getElementById('closeQrModal');
+            // Get form values
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                serviceType: document.getElementById('serviceType').value,
+                visitDate: document.getElementById('visitDate').value,
+                notes: document.getElementById('notes').value,
+                timestamp: new Date().toISOString()
+            };
             
-            qrToggle.addEventListener('click', () => qrModal.classList.remove('hidden'));
-            mobileQrToggle.addEventListener('click', () => qrModal.classList.remove('hidden'));
-            closeQrModal.addEventListener('click', () => qrModal.classList.add('hidden'));
+            // In a real implementation, you would send this data to your database
+            // For demo purposes, we'll just log it and show success message
+            console.log('Form data:', formData);
             
-            // Form Submission
-            const registrationForm = document.getElementById('registrationForm');
-            const successMessage = document.getElementById('successMessage');
+            // Simulate database save (replace with actual API call)
+            setTimeout(() => {
+                document.getElementById('registrationForm').classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+            }, 800);
+        });
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('visitorForm').reset();
+            setDefaultDate();
+            document.getElementById('registrationForm').classList.remove('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        }
+        
+        // Initialize everything when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setDefaultDate();
+            generateQRCode();
             
-            registrationForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form data
-                const formData = {
-                    fullName: document.getElementById('fullName').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    serviceType: document.getElementById('serviceType').value,
-                    visitDate: document.getElementById('visitDate').value,
-                    notes: document.getElementById('notes').value,
-                    timestamp: new Date().toISOString()
-                };
-                
-                // In a real implementation, you would send this data to your backend
-                // For this example, we'll just log it and show success message
-                console.log('Form data:', formData);
-                
-                // Simulate saving to database
-                setTimeout(() => {
-                    registrationForm.classList.add('hidden');
-                    successMessage.classList.remove('hidden');
-                }, 1000);
-            });
-            
-            // New Registration Button
-            document.getElementById('newRegistration').addEventListener('click', function() {
-                registrationForm.classList.remove('hidden');
-                successMessage.classList.add('hidden');
-                registrationForm.reset();
-                document.getElementById('visitDate').value = today;
+            // Phone number formatting
+            document.getElementById('phone').addEventListener('input', function(e) {
+                const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
             });
         });
     </script>
