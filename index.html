@@ -86,10 +86,18 @@
             <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl">HH</div>
             <h1 class="text-xl font-bold">The Haitian Hub Studio</h1>
         </div>
-        <button id="themeToggle" class="theme-toggle p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
-            <i class="fas fa-moon dark:hidden"></i>
-            <i class="fas fa-sun hidden dark:inline"></i>
-        </button>
+        <div class="flex items-center space-x-2">
+            <button id="themeToggle" class="theme-toggle p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:inline"></i>
+            </button>
+            <button id="loginBtn" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </button>
+            <button id="logoutBtn" class="hidden px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+        </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-8">
@@ -169,12 +177,43 @@
         <p>© 2023 The Haitian Hub Studio. All rights reserved.</p>
     </footer>
 
+    <!-- Login Modal -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-[var(--bg-secondary)] rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-[var(--text-primary)]">Login</h3>
+                <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="loginError" class="hidden mb-4 p-3 rounded-md bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-sm"></div>
+            <div id="loginSuccess" class="hidden mb-4 p-3 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-sm"></div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="loginEmail" class="block text-sm font-medium mb-1">Email *</label>
+                    <input type="email" id="loginEmail" required 
+                           class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div>
+                    <label for="loginDate" class="block text-sm font-medium mb-1">Today's Date *</label>
+                    <input type="date" id="loginDate" required 
+                           class="w-full px-4 py-2 rounded-md border focus:ring-2 focus:ring-blue-500 transition">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full btn-primary px-4 py-2 rounded-md font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Initialize theme from localStorage or prefer-color-scheme
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 
                               (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            document.documentElement.classList.add(savedTheme);
+            document.documentElement.className = savedTheme;
             updateThemeIcon(savedTheme);
         }
         
@@ -184,13 +223,11 @@
             const isDark = html.classList.contains('dark');
             
             if (isDark) {
-                html.classList.remove('dark');
-                html.classList.add('light');
+                html.className = 'light';
                 localStorage.setItem('theme', 'light');
                 updateThemeIcon('light');
             } else {
-                html.classList.remove('light');
-                html.classList.add('dark');
+                html.className = 'dark';
                 localStorage.setItem('theme', 'dark');
                 updateThemeIcon('dark');
             }
@@ -246,11 +283,14 @@
                 timestamp: new Date().toISOString()
             };
             
-            // In a real implementation, you would send this data to your database
-            // For demo purposes, we'll just log it and show success message
+            // Store visitor data in localStorage
+            const storedVisitors = JSON.parse(localStorage.getItem('visitors') || '[]');
+            storedVisitors.push(formData);
+            localStorage.setItem('visitors', JSON.stringify(storedVisitors));
+            
             console.log('Form data:', formData);
             
-            // Simulate database save (replace with actual API call)
+            // Show success message
             setTimeout(() => {
                 document.getElementById('registrationForm').classList.add('hidden');
                 document.getElementById('successMessage').classList.remove('hidden');
@@ -265,8 +305,94 @@
             document.getElementById('successMessage').classList.add('hidden');
         }
         
+        // Login/Logout functionality
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            // Show login modal and set today's date
+            document.getElementById('loginModal').classList.remove('hidden');
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('loginDate').value = `${yyyy}-${mm}-${dd}`;
+        });
+
+        document.getElementById('closeLoginModal').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.add('hidden');
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const date = document.getElementById('loginDate').value;
+            
+            // Reset messages
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginSuccess').classList.add('hidden');
+            
+            // Validate email format
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showLoginError('Please enter a valid email address');
+                return;
+            }
+
+            // Simulate checking against database (replace with actual API call)
+            const registeredEmails = ['admin@haitianhub.com', 'user@example.com'];
+            const registeredPhones = ['1234567890', '5551234567'];
+            
+            // Check if email exists in database
+            if (!registeredEmails.includes(email)) {
+                showLoginError('Email not found. Please register as a visitor first.');
+                return;
+            }
+
+            // Successful login
+            showLoginSuccess('Login successful! Redirecting...');
+            
+            // Update UI after short delay
+            setTimeout(() => {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                localStorage.setItem('isLoggedIn', 'true');
+            }, 1500);
+        });
+
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function showLoginSuccess(message) {
+            const successDiv = document.getElementById('loginSuccess');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('loginBtn').classList.remove('hidden');
+            localStorage.removeItem('isLoggedIn');
+            // Clear any login messages when logging out
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('loginSuccess').classList.add('hidden');
+        });
+
+        // Check login state on load
+        function checkLoginState() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (isLoggedIn) {
+                document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+            }
+        }
+
         // Initialize everything when page loads
         window.addEventListener('DOMContentLoaded', () => {
+            checkLoginState();
             initTheme();
             setDefaultDate();
             generateQRCode();
